@@ -1,25 +1,23 @@
 const express = require('express');
-
 const router = express.Router();
 
+const {
+    getAllPhotos,
+    getPhotoById,
+    uploadPhoto,
+    deletePhoto
+} = require('../controllers/photoController');
+
 // Get all photos
-router.get('/', (req, res) => {
-    res.send('Get all photos route is working!');
-});
+router.get('/', getAllPhotos);
 
-// Get a single photo
-router.get('/:id', (req, res) => {
-    res.send('Get single photo route is working!');
-});
+// Get single photo
+router.get('/:id', getPhotoById);
 
-// Upload a new photo
-router.post('/upload', (req, res) => {
-    res.send('Upload photo route is working!');
-});
+// Upload photo
+router.post('/upload', uploadPhoto);
 
-// Delete a photo
-router.delete('/:id', (req, res) => {
-    res.send('Delete photo route is working!');
-});
+// Delete photo
+router.delete('/:id', deletePhoto);
 
 module.exports = router;

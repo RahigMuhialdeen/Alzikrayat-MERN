@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Photo = require('../models/Photo');
 
 // Get all photos
@@ -19,6 +20,11 @@ const getAllPhotos = async (req, res) => {
 // Get a single photo
 const getPhotoById = async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({
+        message: 'Invalid photo ID'
+    });
+}
         const photo = await Photo.findById(req.params.id)
             .populate('userId', 'firstName lastName');
 
@@ -68,11 +74,31 @@ const uploadPhoto = async (req, res) => {
 // Delete a photo
 const deletePhoto = async (req, res) => {
     try {
+        const { userId } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                message: 'Invalid photo ID'
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                message: 'Invalid user ID'
+            });
+        }
+
         const photo = await Photo.findById(req.params.id);
 
         if (!photo) {
             return res.status(404).json({
                 message: 'Photo not found'
+            });
+        }
+
+        if (photo.userId.toString() !== userId) {
+            return res.status(403).json({
+                message: 'You are not authorized to delete this photo'
             });
         }
 

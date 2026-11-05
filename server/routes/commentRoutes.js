@@ -1,20 +1,19 @@
 const express = require('express');
-
 const router = express.Router();
 
-// Get all comments for a photo
-router.get('/:photoId', (req, res) => {
-    res.send('Get comments route is working!');
-});
+const {
+    getCommentsByPhoto,
+    addComment,
+    deleteComment
+} = require('../controllers/commentController');
+
+// Get comments for a photo
+router.get('/:photoId', getCommentsByPhoto);
 
 // Add a new comment
-router.post('/', (req, res) => {
-    res.send('Add comment route is working!');
-});
+router.post('/', addComment);
 
 // Delete a comment
-router.delete('/:id', (req, res) => {
-    res.send('Delete comment route is working!');
-});
+router.delete('/:id', deleteComment);
 
 module.exports = router;
