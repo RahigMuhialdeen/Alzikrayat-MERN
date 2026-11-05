@@ -11,6 +11,7 @@ const PORT = 5000;
 
 // Middleware
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // API Routes
 app.use('/api/auth', authRoutes);

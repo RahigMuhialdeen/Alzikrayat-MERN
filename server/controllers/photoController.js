@@ -1,5 +1,19 @@
 const mongoose = require('mongoose');
 const Photo = require('../models/Photo');
+const multer = require('multer');
+const path = require('path');
+
+// Multer Storage Configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage });
 
 // Get all photos
 const getAllPhotos = async (req, res) => {
@@ -47,11 +61,29 @@ const getPhotoById = async (req, res) => {
 // Upload a new photo
 const uploadPhoto = async (req, res) => {
     try {
-        const { userId, fileName, title, description } = req.body;
+        if (!req.file) {
+            return res.status(400).json({
+                message: 'Please upload a photo'
+            });
+        }
+
+        const { userId, title, description } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                message: 'Invalid user ID'
+            });
+        }
+
+        if (!title || !title.trim()) {
+            return res.status(400).json({
+                message: 'Photo title is required'
+            });
+        }
 
         const newPhoto = new Photo({
             userId,
-            fileName,
+            fileName: req.file.filename,
             title,
             description
         });
@@ -120,5 +152,6 @@ module.exports = {
     getAllPhotos,
     getPhotoById,
     uploadPhoto,
-    deletePhoto
+    deletePhoto,
+    upload
 };

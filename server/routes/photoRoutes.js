@@ -5,7 +5,8 @@ const {
     getAllPhotos,
     getPhotoById,
     uploadPhoto,
-    deletePhoto
+    deletePhoto,
+    upload
 } = require('../controllers/photoController');
 
 // Get all photos
@@ -15,7 +16,7 @@ router.get('/', getAllPhotos);
 router.get('/:id', getPhotoById);
 
 // Upload photo
-router.post('/upload', uploadPhoto);
+router.post('/upload', upload.single('photo'), uploadPhoto);
 
 // Delete photo
 router.delete('/:id', deletePhoto);
